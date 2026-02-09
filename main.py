@@ -197,6 +197,12 @@ if st.button("Nhấn vào đây để xuất báo cáo"):
                                         by=["Tên tỉnh", "Tên Khu vực"],
                                         ascending=[True, True]
                                     )
+        df_his['Tên Khu vực'] = df_his['Tên Khu vực'].str.replace('Thành phố ', '', regex=False)
+        df_his["Tên tỉnh"] = df_his["Tên Khu vực"].apply(
+            lambda x: x.split("-", 1)[1].strip()
+            if isinstance(x, str) and "-" in x
+            else "No"
+        )
         df_his=df_his.drop_duplicates()
 
         st.subheader("Bảng lịch sử lưu lại để upload hôm sau:")
