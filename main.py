@@ -219,51 +219,51 @@ if st.button("Nhấn vào đây để xuất báo cáo"):
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
         #===================================================================================================
-        st.subheader("Bảng lịch sử pivot:")
-        df_his1 = df_his.sort_values(["Tên Khu vực", "Type", "Ngay"])
-        df_his1["Hiệu"] = (
-            df_his1.groupby(["Tên Khu vực", "Type"])["Tổng"]
-            .diff()
-        )
+        # st.subheader("Bảng lịch sử pivot:")
+        # df_his1 = df_his.sort_values(["Tên Khu vực", "Type", "Ngay"])
+        # df_his1["Hiệu"] = (
+        #     df_his1.groupby(["Tên Khu vực", "Type"])["Tổng"]
+        #     .diff()
+        # )
  
-        df_his1=df_his1[(df_his1.Ngay>date_min)]
-        df_pivot = pd.pivot_table(
-            df_his1,
-            index="Tên Khu vực",
-            columns=["Type", "Ngay"],
-            values="Hiệu",
-            aggfunc="sum"   # phòng khi có trùng dữ liệu
-        )
-        df_hieu = df_pivot.reset_index()
-        df_hieu.columns = [
-            "_".join(map(str, col)).strip("_")
-            if isinstance(col, tuple)
-            else col
-            for col in df_hieu.columns
-        ]
-        df_hieu['Tên tỉnh']=df_hieu["Tên Khu vực"].apply(
-            lambda x: x.split("-", 1)[1].strip()
-            if isinstance(x, str) and "-" in x
-            else "No"
-        )
-        df_hieu=df_hieu.sort_values(
-                                        by=["Tên tỉnh", "Tên Khu vực"],
-                                        ascending=[True, True]
-                                    )
-        st.dataframe(df_hieu)
+        # df_his1=df_his1[(df_his1.Ngay>date_min)]
+        # df_pivot = pd.pivot_table(
+        #     df_his1,
+        #     index="Tên Khu vực",
+        #     columns=["Type", "Ngay"],
+        #     values="Hiệu",
+        #     aggfunc="sum"   # phòng khi có trùng dữ liệu
+        # )
+        # df_hieu = df_pivot.reset_index()
+        # df_hieu.columns = [
+        #     "_".join(map(str, col)).strip("_")
+        #     if isinstance(col, tuple)
+        #     else col
+        #     for col in df_hieu.columns
+        # ]
+        # df_hieu['Tên tỉnh']=df_hieu["Tên Khu vực"].apply(
+        #     lambda x: x.split("-", 1)[1].strip()
+        #     if isinstance(x, str) and "-" in x
+        #     else "No"
+        # )
+        # df_hieu=df_hieu.sort_values(
+        #                                 by=["Tên tỉnh", "Tên Khu vực"],
+        #                                 ascending=[True, True]
+        #                             )
+        # st.dataframe(df_hieu)
 
-        #===================================
-        excel_data_hieu = to_excel(df_hieu)    
-        st.download_button(
-            label="📥 Download bảng history pivot (.xlsx)",
-            data=excel_data_hieu,
-            file_name=f"history_hieu_{date}.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+        # #===================================
+        # excel_data_hieu = to_excel(df_hieu)    
+        # st.download_button(
+        #     label="📥 Download bảng history pivot (.xlsx)",
+        #     data=excel_data_hieu,
+        #     file_name=f"history_hieu_{date}.xlsx",
+        #     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        # )
 
         #=======================================================================================
         st.subheader("Bảng báo cáo:")
-        df_his1=df_his[df_his.Ngay>=date_max]
+        df_his1=df_his[(df_his.Ngay>=date_max)]
         df_pivot = pd.pivot_table(
             df_his1,
             index="Tên Khu vực",
