@@ -161,7 +161,7 @@ if uploaded_file_his is not None:
     try:
         df_his = pd.read_excel(uploaded_file_his)
         df_his['Ngay']=df_his['Ngay'].astype(str)
-        date_max=df_his.Ngay.max()
+        date_max=df_his[df_his.Ngay<'20990000'].Ngay.max()
         date_min=df_his.Ngay.min()
         st.success("File đã được tải lên thành công!")
         st.write(f"Dữ liệu preview: từ ngày {date_min} đến ngày {date_max}")
