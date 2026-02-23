@@ -382,7 +382,7 @@ if uploaded_file is not None:
                 legend=dict(
                     orientation="h",
                     yanchor="top",
-                    y=-0.15,
+                    y=-0.25,
                     xanchor="center",
                     x=0.5
                 ),
