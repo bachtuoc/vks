@@ -352,7 +352,7 @@ if uploaded_file is not None:
                     text=df["Tỷ lệ"].astype(str) + "%",
                     textposition="top center",
                     textfont=dict(color="red"),
-                    line=dict(color="red"),
+                    line=dict(color="red",width=1.5),
                     marker=dict(color="red"),
                     yaxis="y2"
                 )
