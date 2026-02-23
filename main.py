@@ -305,6 +305,7 @@ if st.button("Nhấn vào đây để xuất báo cáo"):
         placeholder.write(err)
 
 st.title("3. Biểu đồ")
+uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
 
 if uploaded_file is not None:
     try:
