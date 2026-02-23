@@ -306,15 +306,7 @@ if st.button("Nhấn vào đây để xuất báo cáo"):
         placeholder.write(err)
 
 st.title("3. Biểu đồ")
-uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
 
-import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
-
-st.set_page_config(page_title="Dashboard Nhập Án", layout="wide")
-
-st.title("Dashboard Số mới nhập và Tỷ lệ theo Vùng")
 
 uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
 
