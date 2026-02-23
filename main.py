@@ -307,7 +307,8 @@ if st.button("Nhấn vào đây để xuất báo cáo"):
 
 st.title("3. Biểu đồ")
 
-
+ten = st.text_input("Nhập tên biểu đồ : ",)
+loai = st.text_input("Nhập loại biểu đồ tỉnh/khu vực : ",)
 uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
 
 
@@ -359,12 +360,12 @@ if uploaded_file is not None:
 
             fig.update_layout(
                 title=dict(
-                    text="Số mới nhập và Tỷ lệ theo Vùng",
+                    text=ten,
                     x=0.5,
                     xanchor="center"
                 ),
                 xaxis=dict(
-                    title="Vùng",
+                    title=loai,
                     showgrid=False
                 ),
                 yaxis=dict(
