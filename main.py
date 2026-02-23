@@ -310,6 +310,7 @@ st.title("3. Biểu đồ")
 
 uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
 
+
 if uploaded_file is not None:
     try:
         df = pd.read_excel(uploaded_file)
@@ -322,14 +323,14 @@ if uploaded_file is not None:
         else:
             df = df[required_cols]
 
-            # Làm tròn tỷ lệ 1 chữ số
+            # Làm tròn tỷ lệ
             df["Tỷ lệ"] = pd.to_numeric(df["Tỷ lệ"], errors="coerce").round(1)
 
             st.dataframe(df, use_container_width=True)
 
             fig = go.Figure()
 
-            # Bar
+            # Biểu đồ cột
             fig.add_trace(
                 go.Bar(
                     x=df["Vùng"],
@@ -340,7 +341,7 @@ if uploaded_file is not None:
                 )
             )
 
-            # Line
+            # Biểu đồ line
             fig.add_trace(
                 go.Scatter(
                     x=df["Vùng"],
@@ -349,7 +350,7 @@ if uploaded_file is not None:
                     mode="lines+markers+text",
                     text=df["Tỷ lệ"].astype(str) + "%",
                     textposition="top center",
-                    textfont=dict(color="red"),   # số màu đỏ
+                    textfont=dict(color="red"),
                     line=dict(color="red"),
                     marker=dict(color="red"),
                     yaxis="y2"
@@ -357,6 +358,11 @@ if uploaded_file is not None:
             )
 
             fig.update_layout(
+                title=dict(
+                    text="Số mới nhập và Tỷ lệ theo Vùng",
+                    x=0.5,
+                    xanchor="center"
+                ),
                 xaxis=dict(
                     title="Vùng",
                     showgrid=False
@@ -373,27 +379,15 @@ if uploaded_file is not None:
                     showgrid=False,
                     zeroline=False
                 ),
-                # Legend xuống dưới
                 legend=dict(
                     orientation="h",
                     yanchor="top",
-                    y=-0.25,
+                    y=-0.15,
                     xanchor="center",
                     x=0.5
                 ),
-                margin=dict(t=40, b=120),
+                margin=dict(t=80, b=80),
                 height=600
-            )
-
-            # Tiêu đề xuống dưới trục hoành
-            fig.add_annotation(
-                text="Số mới nhập và Tỷ lệ theo Vùng",
-                xref="paper",
-                yref="paper",
-                x=0.5,
-                y=-0.38,
-                showarrow=False,
-                font=dict(size=18)
             )
 
             st.plotly_chart(fig, use_container_width=True)
