@@ -310,8 +310,6 @@ uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
 if uploaded_file is not None:
     try:
         df = pd.read_excel(uploaded_file)
-
-        # Chuẩn hóa tên cột
         df.columns = [col.strip() for col in df.columns]
 
         required_cols = ["Vùng", "Số mới nhập", "Tỷ lệ"]
@@ -320,39 +318,48 @@ if uploaded_file is not None:
             st.error("File phải có đúng 3 cột: Vùng | Số mới nhập | Tỷ lệ")
         else:
             df = df[required_cols]
-
-            # Hiển thị dữ liệu
-            st.subheader("Dữ liệu đã tải lên")
+            df["Tỷ lệ"] = pd.to_numeric(df["Tỷ lệ"], errors="coerce").round(0)
+            st.subheader("Dữ liệu")
             st.dataframe(df)
 
-            # Vẽ biểu đồ
+            sns.set_style("whitegrid")
+            sns.set_context("talk")
+
             fig, ax1 = plt.subplots(figsize=(12, 6))
 
-            bars = ax1.bar(df["Vùng"], df["Số mới nhập"])
+            # Bar chart
+            sns.barplot(
+                data=df,
+                x="Vùng",
+                y="Số mới nhập",
+                ax=ax1
+            )
+
             ax1.set_ylabel("Số mới nhập")
             ax1.set_xlabel("Vùng")
-            ax1.set_title("Số mới nhập và Tỷ lệ theo Vùng")
 
             # Hiển thị số trên cột
-            for bar in bars:
-                height = bar.get_height()
-                ax1.text(bar.get_x() + bar.get_width()/2,
-                         height,
-                         f'{int(height)}',
-                         ha='center',
-                         va='bottom')
+            for container in ax1.containers:
+                ax1.bar_label(container, fmt='%d')
 
-            ax1.grid(axis='y', linestyle='--', alpha=0.6)
-
-            # Trục thứ 2 cho tỷ lệ
+            # Line chart trên trục thứ 2
             ax2 = ax1.twinx()
-            ax2.plot(df["Vùng"], df["Tỷ lệ"], marker='o')
+
+            sns.lineplot(
+                data=df,
+                x="Vùng",
+                y="Tỷ lệ",
+                marker="o",
+                ax=ax2
+            )
+
             ax2.set_ylabel("Tỷ lệ (%)")
 
             # Hiển thị % trên line
             for i, txt in enumerate(df["Tỷ lệ"]):
                 ax2.text(i, txt, f'{txt}%', ha='center', va='bottom')
 
+            plt.title("Số mới nhập và Tỷ lệ theo Vùng")
             plt.xticks(rotation=30)
             plt.tight_layout()
 
@@ -360,7 +367,3 @@ if uploaded_file is not None:
 
     except Exception as e:
         st.error(f"Lỗi khi đọc file: {e}")
-
-
-
-        #placeholder.write('Xin lỗi, bạn xem lại key của bạn đã đúng chưa')
