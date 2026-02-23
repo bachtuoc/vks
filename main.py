@@ -6,7 +6,8 @@ import pandas as pd
 from time import sleep
 from datetime import date, timedelta
 from io import BytesIO
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 def extract_type(text):
     """
     Trích xuất 'type' từ chuỗi JSON-like.
@@ -298,12 +299,66 @@ if st.button("Nhấn vào đây để xuất báo cáo"):
             file_name=f"baocao_data_{date}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-
+        
     except Exception as err:
         placeholder = st.empty()
         placeholder.write(err)
 
+st.title("3. Biểu đồ")
 
+if uploaded_file is not None:
+    try:
+        df = pd.read_excel(uploaded_file)
+
+        # Chuẩn hóa tên cột
+        df.columns = [col.strip() for col in df.columns]
+
+        required_cols = ["Vùng", "Số mới nhập", "Tỷ lệ"]
+
+        if not all(col in df.columns for col in required_cols):
+            st.error("File phải có đúng 3 cột: Vùng | Số mới nhập | Tỷ lệ")
+        else:
+            df = df[required_cols]
+
+            # Hiển thị dữ liệu
+            st.subheader("Dữ liệu đã tải lên")
+            st.dataframe(df)
+
+            # Vẽ biểu đồ
+            fig, ax1 = plt.subplots(figsize=(12, 6))
+
+            bars = ax1.bar(df["Vùng"], df["Số mới nhập"])
+            ax1.set_ylabel("Số mới nhập")
+            ax1.set_xlabel("Vùng")
+            ax1.set_title("Số mới nhập và Tỷ lệ theo Vùng")
+
+            # Hiển thị số trên cột
+            for bar in bars:
+                height = bar.get_height()
+                ax1.text(bar.get_x() + bar.get_width()/2,
+                         height,
+                         f'{int(height)}',
+                         ha='center',
+                         va='bottom')
+
+            ax1.grid(axis='y', linestyle='--', alpha=0.6)
+
+            # Trục thứ 2 cho tỷ lệ
+            ax2 = ax1.twinx()
+            ax2.plot(df["Vùng"], df["Tỷ lệ"], marker='o')
+            ax2.set_ylabel("Tỷ lệ (%)")
+
+            # Hiển thị % trên line
+            for i, txt in enumerate(df["Tỷ lệ"]):
+                ax2.text(i, txt, f'{txt}%', ha='center', va='bottom')
+
+            plt.xticks(rotation=30)
+            plt.tight_layout()
+
+            st.pyplot(fig)
+
+    except Exception as e:
+        st.error(f"Lỗi khi đọc file: {e}")
 
 
 
