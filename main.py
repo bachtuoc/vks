@@ -310,6 +310,7 @@ st.title("3. Biểu đồ")
 
 uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
 
+
 if uploaded_file is not None:
     try:
         df = pd.read_excel(uploaded_file)
@@ -326,7 +327,7 @@ if uploaded_file is not None:
             df["Tỷ lệ"] = pd.to_numeric(df["Tỷ lệ"], errors="coerce").round(1)
 
             st.subheader("Dữ liệu")
-            st.dataframe(df)
+            st.dataframe(df, use_container_width=True)
 
             # Tạo biểu đồ
             fig = go.Figure()
@@ -355,17 +356,26 @@ if uploaded_file is not None:
                 )
             )
 
+            # Layout sạch, bỏ gạch ngang
             fig.update_layout(
                 title="Số mới nhập và Tỷ lệ theo Vùng",
-                xaxis=dict(title="Vùng"),
-                yaxis=dict(title="Số mới nhập"),
+                xaxis=dict(
+                    title="Vùng",
+                    showgrid=False
+                ),
+                yaxis=dict(
+                    title="Số mới nhập",
+                    showgrid=False,
+                    zeroline=False
+                ),
                 yaxis2=dict(
                     title="Tỷ lệ (%)",
                     overlaying="y",
-                    side="right"
+                    side="right",
+                    showgrid=False,
+                    zeroline=False
                 ),
                 legend=dict(x=0.01, y=0.99),
-                margin=dict(t=60, b=40),
                 height=600
             )
 
