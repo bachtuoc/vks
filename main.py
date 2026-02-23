@@ -8,6 +8,7 @@ from datetime import date, timedelta
 from io import BytesIO
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.graph_objects as go
 def extract_type(text):
     """
     Trích xuất 'type' từ chuỗi JSON-like.
@@ -307,6 +308,16 @@ if st.button("Nhấn vào đây để xuất báo cáo"):
 st.title("3. Biểu đồ")
 uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
 
+import streamlit as st
+import pandas as pd
+import plotly.graph_objects as go
+
+st.set_page_config(page_title="Dashboard Nhập Án", layout="wide")
+
+st.title("Dashboard Số mới nhập và Tỷ lệ theo Vùng")
+
+uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
+
 if uploaded_file is not None:
     try:
         df = pd.read_excel(uploaded_file)
@@ -318,52 +329,55 @@ if uploaded_file is not None:
             st.error("File phải có đúng 3 cột: Vùng | Số mới nhập | Tỷ lệ")
         else:
             df = df[required_cols]
-            df["Tỷ lệ"] = pd.to_numeric(df["Tỷ lệ"], errors="coerce").round(0)
+
+            # Làm tròn tỷ lệ 1 chữ số
+            df["Tỷ lệ"] = pd.to_numeric(df["Tỷ lệ"], errors="coerce").round(1)
+
             st.subheader("Dữ liệu")
             st.dataframe(df)
 
-            sns.set_style("whitegrid")
-            sns.set_context("talk")
+            # Tạo biểu đồ
+            fig = go.Figure()
 
-            fig, ax1 = plt.subplots(figsize=(12, 6))
-
-            # Bar chart
-            sns.barplot(
-                data=df,
-                x="Vùng",
-                y="Số mới nhập",
-                ax=ax1
+            # Biểu đồ cột
+            fig.add_trace(
+                go.Bar(
+                    x=df["Vùng"],
+                    y=df["Số mới nhập"],
+                    name="Số mới nhập",
+                    text=df["Số mới nhập"],
+                    textposition="outside"
+                )
             )
 
-            ax1.set_ylabel("Số mới nhập")
-            ax1.set_xlabel("Vùng")
-
-            # Hiển thị số trên cột
-            for container in ax1.containers:
-                ax1.bar_label(container, fmt='%d')
-
-            # Line chart trên trục thứ 2
-            ax2 = ax1.twinx()
-
-            sns.lineplot(
-                data=df,
-                x="Vùng",
-                y="Tỷ lệ",
-                marker="o",
-                ax=ax2
+            # Biểu đồ line (trục phụ)
+            fig.add_trace(
+                go.Scatter(
+                    x=df["Vùng"],
+                    y=df["Tỷ lệ"],
+                    name="Tỷ lệ (%)",
+                    mode="lines+markers+text",
+                    text=df["Tỷ lệ"].astype(str) + "%",
+                    textposition="top center",
+                    yaxis="y2"
+                )
             )
 
-            ax2.set_ylabel("Tỷ lệ (%)")
+            fig.update_layout(
+                title="Số mới nhập và Tỷ lệ theo Vùng",
+                xaxis=dict(title="Vùng"),
+                yaxis=dict(title="Số mới nhập"),
+                yaxis2=dict(
+                    title="Tỷ lệ (%)",
+                    overlaying="y",
+                    side="right"
+                ),
+                legend=dict(x=0.01, y=0.99),
+                margin=dict(t=60, b=40),
+                height=600
+            )
 
-            # Hiển thị % trên line
-            for i, txt in enumerate(df["Tỷ lệ"]):
-                ax2.text(i, txt, f'{txt}%', ha='center', va='bottom')
-
-            plt.title("Số mới nhập và Tỷ lệ theo Vùng")
-            plt.xticks(rotation=30)
-            plt.tight_layout()
-
-            st.pyplot(fig)
+            st.plotly_chart(fig, use_container_width=True)
 
     except Exception as e:
         st.error(f"Lỗi khi đọc file: {e}")
