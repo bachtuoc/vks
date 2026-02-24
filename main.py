@@ -325,7 +325,7 @@ if uploaded_file is not None:
             df = df[required_cols]
 
             # Làm tròn tỷ lệ
-            df["Tỷ lệ"] = pd.to_numeric(df["Tỷ lệ"], errors="coerce").round(1)*100
+            df["Tỷ lệ"] = pd.to_numeric(df["Tỷ lệ"], errors="coerce").round(0)*100
 
             st.dataframe(df, use_container_width=True)
 
