@@ -400,7 +400,7 @@ st.title("4. Biểu đồ (không có %)")
 
 ten1 = st.text_input("Nhập tên chart : ")
 loai1 = st.text_input("Nhập loại chart tỉnh/khu vực : ")
-uploaded_file1 = st.file_uploader("Upload file Excel", type=["xlsx"])
+uploaded_file1 = st.file_uploader("Upload Excel", type=["xlsx"])
 
 if uploaded_file1 is not None:
     try:
