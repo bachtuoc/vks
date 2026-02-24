@@ -395,3 +395,70 @@ if uploaded_file is not None:
 
     except Exception as e:
         st.error(f"Lỗi khi đọc file: {e}")
+
+st.title("4. Biểu đồ (không có %)")
+
+ten = st.text_input("Nhập tên biểu đồ : ")
+loai = st.text_input("Nhập loại biểu đồ tỉnh/khu vực : ")
+uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
+
+if uploaded_file is not None:
+    try:
+        df = pd.read_excel(uploaded_file)
+        df.columns = [col.strip() for col in df.columns]
+
+        required_cols = ["Vùng", "Số mới nhập"]
+
+        if not all(col in df.columns for col in required_cols):
+            st.error("File phải có đúng 2 cột: Vùng | Số mới nhập")
+        else:
+            df = df[required_cols]
+
+            # Chuyển Số mới nhập về dạng số
+            #df["Số mới nhập"] = pd.to_numeric(df["Số mới nhập"], errors="coerce")
+
+            st.dataframe(df, use_container_width=True)
+
+            fig = go.Figure()
+
+            # Biểu đồ cột
+            fig.add_trace(
+                go.Bar(
+                    x=df["Vùng"],
+                    y=df["Số mới nhập"],
+                    name="Số mới nhập",
+                    text=df["Số mới nhập"],
+                    textposition="outside"
+                )
+            )
+
+            fig.update_layout(
+                title=dict(
+                    text=ten,
+                    x=0.5,
+                    xanchor="center"
+                ),
+                xaxis=dict(
+                    title=loai,
+                    showgrid=False
+                ),
+                yaxis=dict(
+                    title="Số mới nhập",
+                    showgrid=False,
+                    zeroline=False
+                ),
+                legend=dict(
+                    orientation="h",
+                    yanchor="top",
+                    y=-0.2,
+                    xanchor="center",
+                    x=0.5
+                ),
+                margin=dict(t=80, b=80),
+                height=600
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
+    except Exception as e:
+        st.error(f"Lỗi khi đọc file: {e}")
