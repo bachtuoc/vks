@@ -398,13 +398,13 @@ if uploaded_file is not None:
 
 st.title("4. Biểu đồ (không có %)")
 
-ten = st.text_input("Nhập tên biểu đồ : ")
-loai = st.text_input("Nhập loại biểu đồ tỉnh/khu vực : ")
-uploaded_file = st.file_uploader("Upload file Excel", type=["xlsx"])
+ten1 = st.text_input("Nhập tên biểu đồ : ")
+loai1 = st.text_input("Nhập loại biểu đồ tỉnh/khu vực : ")
+uploaded_file1 = st.file_uploader("Upload file Excel", type=["xlsx"])
 
-if uploaded_file is not None:
+if uploaded_file1 is not None:
     try:
-        df = pd.read_excel(uploaded_file)
+        df = pd.read_excel(uploaded_file1)
         df.columns = [col.strip() for col in df.columns]
 
         required_cols = ["Vùng", "Số mới nhập"]
@@ -434,12 +434,12 @@ if uploaded_file is not None:
 
             fig.update_layout(
                 title=dict(
-                    text=ten,
+                    text=ten1,
                     x=0.5,
                     xanchor="center"
                 ),
                 xaxis=dict(
-                    title=loai,
+                    title=loai1,
                     showgrid=False
                 ),
                 yaxis=dict(
