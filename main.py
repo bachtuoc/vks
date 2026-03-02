@@ -513,12 +513,6 @@ if uploaded_file_tinbao is not None:
     except Exception as e:
         st.error(f"Lỗi khi đọc file: {e}")   
 
-        st.download_button(
-            label="📥 Down bảng history (.xlsx)",
-            data=excel_data_his,
-            file_name=f"history_data_{date}.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
 st.subheader("aUp truy tố:")
 uploaded_file_truyto = st.file_uploader("aUp file excel TRUY TỐ ngày hôm nay:", type=["xlsx", "xls"])
 
