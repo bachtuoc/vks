@@ -492,7 +492,7 @@ if uploaded_file_tinbao is not None:
         df_tinbao["STT"] = df_tinbao["STT"].fillna(0)
         df_tinbao["group"] = (df_tinbao["STT"] < df_tinbao["STT"].shift()).cumsum()
         df_tinbao["city"] = df_tinbao.groupby("group")["Tên tỉnh"].transform("max")
-        df_tinbao=df_tinbao[df_tinbao['Tên Khu vực'].str.contains("Phòng Công tố")]
+        df_tinbao=df_tinbao[df_tinbao['Tên Khu vực'].str.contains(r"Phòng Công tố|Văn phòng",na=False)]
 
         df_tinbao['Ngay']=date
         df_tinbao['Type']='Tổng tin báo'
@@ -507,8 +507,11 @@ if uploaded_file_tinbao is not None:
                                 .sum()
                         )
         df_tinbao_tinh = df_tinbao_tinh.sort_values("city")
-        df_tinbao_tinh = clean_for_streamlit(df_tinbao_tinh)
-        st.dataframe(df_tinbao_tinh)
+        df_tinbao_tinh['Tên đơn vị']=df_tinbao_tinh['city']
+        df_tinbao_tinh['STT']=0
+        df_tinbao_tinh1=pd.concat((df_tinbao_tinh[['STT','Tên đơn vị','Tổng','city','Ngay','Type']],df_tinbao[['STT','Tên đơn vị','Tổng','city','Ngay','Type']]),axis=0).sort_values(by=['city','STT'])
+        df_tinbao_tinh1 = clean_for_streamlit(df_tinbao_tinh1)
+        st.dataframe(df_tinbao_tinh1)
 
     except Exception as e:
         st.error(f"Lỗi khi đọc file: {e}")   
@@ -550,9 +553,12 @@ if uploaded_file_truyto is not None:
                                 .sum()
                         )
         df_truyto_tinh = df_truyto_tinh.sort_values("city")
-        df_truyto_tinh = clean_for_streamlit(df_truyto_tinh)
-        st.dataframe(df_truyto_tinh)
-
+        df_truyto_tinh['Tên đơn vị']=df_truyto_tinh['city']
+        df_truyto_tinh['STT']=0
+        df_truyto_tinh1=pd.concat((df_truyto_tinh[['STT','Tên đơn vị','Tổng','city','Ngay','Type']],df_truyto[['STT','Tên đơn vị','Tổng','city','Ngay','Type']]),axis=0).sort_values(by=['city','STT'])
+        df_truyto_tinh1 = clean_for_streamlit(df_truyto_tinh1)
+        st.dataframe(df_truyto_tinh1)
+        
     except Exception as e:
         st.error(f"Lỗi khi đọc file: {e}")
 
@@ -595,8 +601,11 @@ if uploaded_file_xetxu is not None:
                                 .sum()
                         )
         df_xetxu_tinh = df_xetxu_tinh.sort_values("city")
-        df_xetxu_tinh = clean_for_streamlit(df_xetxu_tinh)
-        st.dataframe(df_xetxu_tinh)
+        df_xetxu_tinh['Tên đơn vị']=df_xetxu_tinh['city']
+        df_xetxu_tinh['STT']=0
+        df_xetxu_tinh1=pd.concat((df_xetxu_tinh[['STT','Tên đơn vị','Tổng','city','Ngay','Type']],df_xetxu[['STT','Tên đơn vị','Tổng','city','Ngay','Type']]),axis=0).sort_values(by=['city','STT'])
+        df_xetxu_tinh1 = clean_for_streamlit(df_xetxu_tinh1)
+        st.dataframe(df_xetxu_tinh1)
 
     except Exception as e:
         st.error(f"Lỗi khi đọc file: {e}")
