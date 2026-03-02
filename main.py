@@ -465,6 +465,24 @@ if uploaded_file1 is not None:
 
 
 #==========================phòng=============================================
+def extract_name(x):
+    if not isinstance(x, str):
+        return x
+
+    # Ưu tiên xử lý Phòng trong ngoặc trước
+    match = re.search(r"\(\s*Phòng.*?\)", x)
+    if match:
+        return match.group(0).replace("(", "").replace(")", "").strip()
+
+    # Nếu có Khu vực
+    if "Khu vực" in x:
+        return x[x.find("Khu vực"):].strip()
+
+    # Nếu có Văn phòng thì giữ nguyên
+    if "Văn phòng" in x:
+        return x.strip()
+
+    return x.strip()
 
 st.title("5.Phòng")
 st.subheader("Nhập ngày:")
@@ -477,17 +495,21 @@ if uploaded_file_tinbao is not None:
         df_tinbao = pd.read_excel(uploaded_file_tinbao,skiprows=5,usecols="A,B,E")      # chỉ lấy cột A, B, E
         df_tinbao.columns = ["STT", "Tên đơn vị", "Tổng"]
 
-        df_tinbao["Tên Khu vực"] = df_tinbao["Tên đơn vị"].apply(
-            lambda x: x[x.find("Khu vực"):].strip()
-            if isinstance(x, str) and "Khu vực" in x
-            else x
-        )
+        # df_tinbao["Tên Khu vực"] = df_tinbao["Tên đơn vị"].apply(
+        #     lambda x: x[x.find("Khu vực"):].strip()
+        #     if isinstance(x, str) and "Khu vực" in x
+        #     else x
+        # )
 
         df_tinbao["Tên tỉnh"] = df_tinbao["Tên Khu vực"].apply(
-            lambda x: x.split("-", 1)[1].strip()
-            if isinstance(x, str) and "-" in x
-            else "1_"
-        )
+    lambda x: (
+        x.split("-", 1)[1].strip()
+        if isinstance(x, str) and "-" in x
+        else x.lower().split("tỉnh", 1)[1].strip().title()
+        if isinstance(x, str) and "tỉnh" in x.lower()
+        else "1_"
+    )
+)
 
         df_tinbao["STT"] = df_tinbao["STT"].fillna(0)
         df_tinbao["group"] = (df_tinbao["STT"] < df_tinbao["STT"].shift()).cumsum()
@@ -530,10 +552,14 @@ if uploaded_file_truyto is not None:
         )
 
         df_truyto["Tên tỉnh"] = df_truyto["Tên Khu vực"].apply(
-            lambda x: x.split("-", 1)[1].strip()
-            if isinstance(x, str) and "-" in x
-            else "1_"
-        )
+    lambda x: (
+        x.split("-", 1)[1].strip()
+        if isinstance(x, str) and "-" in x
+        else x.lower().split("tỉnh", 1)[1].strip().title()
+        if isinstance(x, str) and "tỉnh" in x.lower()
+        else "1_"
+    )
+)
         df_truyto["STT"] = df_truyto["STT"].fillna(0)
         df_truyto["group"] = (df_truyto["STT"] < df_truyto["STT"].shift()).cumsum()
         df_truyto["city"] = df_truyto.groupby("group")["Tên tỉnh"].transform("max")
@@ -578,10 +604,14 @@ if uploaded_file_xetxu is not None:
         )
 
         df_xetxu["Tên tỉnh"] = df_xetxu["Tên Khu vực"].apply(
-            lambda x: x.split("-", 1)[1].strip()
-            if isinstance(x, str) and "-" in x
-            else "1_"
-        )
+    lambda x: (
+        x.split("-", 1)[1].strip()
+        if isinstance(x, str) and "-" in x
+        else x.lower().split("tỉnh", 1)[1].strip().title()
+        if isinstance(x, str) and "tỉnh" in x.lower()
+        else "1_"
+    )
+)
 
         df_xetxu["STT"] = df_xetxu["STT"].fillna(0)
         df_xetxu["group"] = (df_xetxu["STT"] < df_xetxu["STT"].shift()).cumsum()
