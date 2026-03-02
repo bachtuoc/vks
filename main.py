@@ -537,7 +537,7 @@ if uploaded_file_truyto is not None:
         df_truyto["STT"] = df_truyto["STT"].fillna(0)
         df_truyto["group"] = (df_truyto["STT"] < df_truyto["STT"].shift()).cumsum()
         df_truyto["city"] = df_truyto.groupby("group")["Tên tỉnh"].transform("max")
-        df_truyto=df_truyto[df_truyto['Tên Khu vực'].str.contains("Phòng Công tố")]
+        df_truyto=df_truyto[df_truyto['Tên Khu vực'].str.contains(r"Phòng Công tố|Văn phòng",na=False)]
 
 
         df_truyto['Ngay']=date
@@ -586,7 +586,7 @@ if uploaded_file_xetxu is not None:
         df_xetxu["STT"] = df_xetxu["STT"].fillna(0)
         df_xetxu["group"] = (df_xetxu["STT"] < df_xetxu["STT"].shift()).cumsum()
         df_xetxu["city"] = df_xetxu.groupby("group")["Tên tỉnh"].transform("max")
-        df_xetxu=df_xetxu[df_xetxu['Tên Khu vực'].str.contains("Phòng Công tố")]
+        df_xetxu=df_xetxu[df_xetxu['Tên Khu vực'].str.contains(r"Phòng Công tố|Văn phòng",na=False)]
 
 
         df_xetxu['Ngay']=date
