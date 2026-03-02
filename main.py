@@ -495,11 +495,11 @@ if uploaded_file_tinbao is not None:
         df_tinbao = pd.read_excel(uploaded_file_tinbao,skiprows=5,usecols="A,B,E")      # chỉ lấy cột A, B, E
         df_tinbao.columns = ["STT", "Tên đơn vị", "Tổng"]
 
-        # df_tinbao["Tên Khu vực"] = df_tinbao["Tên đơn vị"].apply(
-        #     lambda x: x[x.find("Khu vực"):].strip()
-        #     if isinstance(x, str) and "Khu vực" in x
-        #     else x
-        # )
+        df_tinbao["Tên Khu vực"] = df_tinbao["Tên đơn vị"].apply(
+            lambda x: x[x.find("Khu vực"):].strip()
+            if isinstance(x, str) and "Khu vực" in x
+            else x
+        )
 
         df_tinbao["Tên tỉnh"] = df_tinbao["Tên Khu vực"].apply(
     lambda x: (
