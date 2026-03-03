@@ -518,7 +518,7 @@ if uploaded_file_tinbao is not None:
 
         df_tinbao['Ngay']=date
         df_tinbao['Type']='Tổng tin báo'
-        
+        df_tinbao['Tên đơn vị']=df_tinbao['Tên đơn vị'].apply(extract_name)+" - "+df_tinbao['city']
         st.success("File đã được tải lên thành công!")
         st.write("Dữ liệu preview:")
         df_tinbao = clean_for_streamlit(df_tinbao)
@@ -531,6 +531,7 @@ if uploaded_file_tinbao is not None:
         df_tinbao_tinh = df_tinbao_tinh.sort_values("city")
         df_tinbao_tinh['Tên đơn vị']=df_tinbao_tinh['city']
         df_tinbao_tinh['STT']=0
+
         df_tinbao_tinh1=pd.concat((df_tinbao_tinh[['STT','Tên đơn vị','Tổng','city','Ngay','Type']],df_tinbao[['STT','Tên đơn vị','Tổng','city','Ngay','Type']]),axis=0).sort_values(by=['city','STT'])
         df_tinbao_tinh1 = clean_for_streamlit(df_tinbao_tinh1)
         st.dataframe(df_tinbao_tinh1)
@@ -568,7 +569,7 @@ if uploaded_file_truyto is not None:
 
         df_truyto['Ngay']=date
         df_truyto['Type']='Tổng truy tố'
-
+        df_truyto['Tên đơn vị']=df_truyto['Tên đơn vị'].apply(extract_name)+" - "+df_truyto['city']
         st.success("File đã được tải lên thành công!")
         st.write("Dữ liệu preview:")
         df_truyto = clean_for_streamlit(df_truyto)
@@ -621,6 +622,7 @@ if uploaded_file_xetxu is not None:
 
         df_xetxu['Ngay']=date
         df_xetxu['Type']="Tổng xét xử"
+        df_xetxu['Tên đơn vị']=df_xetxu['Tên đơn vị'].apply(extract_name)+" - "+df_xetxu['city']
         st.success("File đã được tải lên thành công!")
         st.write("Dữ liệu preview:")
         df_safe = clean_for_streamlit(df_xetxu)
